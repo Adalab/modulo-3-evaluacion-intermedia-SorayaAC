@@ -9,6 +9,9 @@ const [newName, setNewName] = useState("");
 const [newOpenWeek, setNewOpenWeek] = useState("true");
 const [newOpenWeekend, setNewOpenWeekend] = useState("true");
 
+const [option, setOption] = useState('all');
+
+// funciones para recoger lo q escribe la usuaria en add
 const handleName = (ev) => {
   setNewName(ev.currentTarget.value);
 };
@@ -18,6 +21,12 @@ const handleOpenWeek = (ev) => {
 const handleOpenWeekend = (ev) => {
   setNewOpenWeekend(ev.currentTarget.checked);
 };
+
+//función para options 
+
+const handleOptions = (ev) => {
+  setOption(ev.target.value);
+}
 
 // función manejadora del botón 
 const handleClick = (ev) => {
@@ -49,15 +58,33 @@ const htmlPubsList = data.map((onePub , index) => {
 
   return (
     <div>
+      {/* ///////header////// */}
    <header>
       <h1>Mis clubs</h1>
+      <form>
+      <label htmlFor="show">Mostrar</label>
+      <select id="show" name="show" onChange={handleOptions}>
+          <option value="all">todos</option>
+          <option 
+          value="onlyWeek">
+          los que abren entre semana
+          </option>
+          <option 
+          value="onlyWeekend">
+          los que abren el fin de semana
+          </option>
+      </select>
+      </form>
    </header>
+   {/* ///////main////// */}
    <main>
+     {/* ///////section render////// */}
       <section>
          <ul>
             {htmlPubsList}
          </ul>
       </section>
+      {/* ///////section add////// */}
       <section>
         <h2> Añadir un nuevo club </h2>
          <form>
