@@ -13,13 +13,13 @@ function App() {
 
   // funciones para recoger lo q escribe la usuaria en add
   const handleName = (ev) => {
-    setNewName(ev.currentTarget.value);
+    setNewName(ev.target.value);
   };
   const handleOpenWeek = (ev) => {
-    setNewOpenWeek(ev.currentTarget.checked);
+    setNewOpenWeek(ev.target.checked);
   };
   const handleOpenWeekend = (ev) => {
-    setNewOpenWeekend(ev.currentTarget.checked);
+    setNewOpenWeekend(ev.target.checked);
   };
 
   //función para options
@@ -38,30 +38,42 @@ function App() {
       openOnWeekend: newOpenWeekend,
     };
     setData([...data, newClub]);
-
+    console.log(data);
     setNewName('');
     setNewOpenWeek('');
     setNewOpenWeekend('');
   };
 
   // función para pintar texto en html
-  const htmlPubsList = data.map((onePub, index) => {
-    return (
-      <li key={index}>
-        <p>
-          <label>#{index} </label> {onePub.name}{' '}
-        </p>
-        <p>
-          <label>Abierto entre semana:</label>{' '}
-          {onePub.openOnWeekdays === true ? 'Sí' : 'No'}
-        </p>
-        <p>
-          <label>Abierto el fin de semana:</label>{' '}
-          {onePub.openOnWeekend === true ? 'Sí' : 'No'}{' '}
-        </p>
-      </li>
-    );
-  });
+  const renderPubsList = () => {
+    return data
+      .filter((onePub) => {
+        if (option === 'onlyWeek') {
+          return onePub.openOnWeekdays === true;
+        } else if (option === 'onlyWeekend') {
+          return onePub.openOnWeekend === true;
+        }
+        return true;
+      })
+
+      .map((onePub, index) => {
+        return (
+          <li key={index}>
+            <p>
+              <label>#{index} </label> {onePub.name}
+            </p>
+            <p>
+              <label>Abierto entre semana:</label>
+              {onePub.openOnWeekdays ? 'Sí' : 'No'}
+            </p>
+            <p>
+              <label>Abierto el fin de semana:</label>
+              {onePub.openOnWeekend ? 'Sí' : 'No'}
+            </p>
+          </li>
+        );
+      });
+  };
 
   return (
     <div>
@@ -70,7 +82,7 @@ function App() {
         <h1>Mis clubs</h1>
         <form>
           <label htmlFor="show">Mostrar</label>
-          <select id="show" name="show" onChange={handleOptions}>
+          <select value={option} id="show" name="show" onChange={handleOptions}>
             <option value="all">todos</option>
             <option value="onlyWeek">los que abren entre semana</option>
             <option value="onlyWeekend">los que abren el fin de semana</option>
@@ -81,14 +93,13 @@ function App() {
       <main>
         {/* ///////section render////// */}
         <section>
-          <ul>{htmlPubsList}</ul>
+          <ul>{renderPubsList()}</ul>
         </section>
         {/* ///////section add////// */}
         <section>
           <h2> Añadir un nuevo club </h2>
-          <form>
+          <form onSubmit={handleClick}>
             <p>
-              {' '}
               <label htmlFor="clubName">Nombre del club</label>
               <input
                 id="clubName"
@@ -106,6 +117,7 @@ function App() {
                 name="clubOpenWeek"
                 onChange={handleOpenWeek}
                 value={newOpenWeek}
+                checked={newOpenWeek}
               />
             </p>
             <p>
@@ -117,14 +129,16 @@ function App() {
                 type="checkbox"
                 name="clubOpenWeekend"
                 onChange={handleOpenWeekend}
-                value={newOpenWeekend === true ? 'Sí' : 'No'}
+                value={newOpenWeekend ? 'Sí' : 'No'}
+                checked={newOpenWeekend}
               />
             </p>
             <p>
               <input
                 type="submit"
                 value="Añadir un nuevo club"
-                onClick={handleClick}
+                name="btn"
+                id="btn"
               />
             </p>
           </form>
